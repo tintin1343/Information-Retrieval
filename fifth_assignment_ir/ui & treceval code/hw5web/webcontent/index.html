@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>Calaca | Search UI for Elasticsearch</title>
+<link rel='stylesheet' type='text/css' href='css/reset.css'>
+<link rel='stylesheet' type='text/css' href='css/calaca.css'>
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<!--[if IE]>
+        <script src='http://html5shiv.googlecode.com/svn/trunk/html5.js'></script>
+    <![endif]-->
+
+
+<script>
+	$(function() {
+		$("#dialog").dialog({
+			autoOpen : false,
+			height : "auto",
+			width : "auto",
+			/* show : {
+				effect : "blind",
+				duration : 1000
+			},
+			hide : {
+				effect : "explode",
+				duration : 1000
+			} */
+		});
+
+	});
+
+	function openDialog(elem) {
+		var id = $(elem).attr("id");
+		var content = $(elem).closest("div.op").find("input").val();
+		//alert("In Open Click...")
+		//alert(content)
+		$("#dialog").dialog("open");
+		$("#diag").text(content);
+
+	}
+</script>
+
+</head>
+<body ng-app='calaca' ng-controller='calacaCtrl'>
+
+	<!-- Title and search box -->
+	<header class='jumbotron'>
+		<h1 class='title'>Search for Obama</h1>
+		<div class='search-box-container'>
+			<input type='text' class='search-box' placeholder='Search' autofocus
+				ng-model='query' ng-change='delayedSearch(0)' id="searchBox">
+				
+		</div>
+	</header>
+
+	<!-- Listing of search results -->
+	<main class='results-container'>
+	<section class='results-info'>
+		<p id='response-details'>{{(hits | number) || 0}} {{resultsLabel
+			|| 'results'}} ({{(timeTook || 0)}}ms)</p>
+		<p ng-show='paginationEnabled()' id='pagination-details'>Showing
+			{{paginationLowerBound}} - {{paginationUpperBound}}</p>
+	</section>
+	<section class='results'>
+		<p class='no-results' ng-show='!results.length && !loading'>No
+			Results</p>
+		<article class='result'
+			ng-repeat='result in results track by $id(result)'>
+			<h2>{{result.title}}</h2>
+			<a href="{{result.docno}}">{{result.docno}}</a>
+			<div class="op">
+				<input type="hidden" value="{{result.text}}">
+
+				<button id="opener" onclick="openDialog(this)">Open Article</button>
+				<button id="print" onclick="writeFile()">PrintToFile</button>
+				<div align="right">
+				<label>URL'S Rated</label><input class="filesCount" value="">
+				</div>
+			</div>
+
+			<form>
+				<input type="radio" name="ranking" value="0"
+					onchange="writeValue(this)" id="{{result.docno}}">0 <input
+					type="radio" name="ranking" value="1" onchange="writeValue(this)"
+					id="{{result.docno}}">1 <input type="radio" name="ranking"
+					value="2" onclick="writeValue(this)" id="{{result.docno}}">2
+			</form>
+		</article>
+		<div id="dialog" title="title">
+			<p id="diag"></p>
+		</div>
+	</section>
+	<section class='pagination-controls'>
+		<button ng-click='search(-1)'
+			ng-show='paginationEnabled() && offset !== 0' class='pager'>Previous</button>
+		<button ng-click='search(1)' ng-show='paginationEnabled()'
+			class='pager'>Next</button>
+	</section>
+	</main>
+	<script type="text/javascript">
+	 var count=0;
+		function writeValue(elem) {
+			var searchText= $("#searchBox").val();
+			//alert(searchText)
+			var qid="0";
+			var fileName="qrelGeneric";
+			if(searchText == "PRESIDENT OBAMA" 
+					|| searchText == "President Obama" 
+					|| searchText == "president obama"){
+				qid="1515";
+				filename = "qrelObama";
+			}
+			if(searchText == "OBAMA FAMILY" 
+				|| searchText == "Obama Family" 
+				|| searchText == "Obama family"){
+			qid="151501";
+			fileName ="qrelObamaFamily";
+		}
+			if(searchText == "Obama election 2008"){
+			qid="151502";
+			fileName="qrelObamaElection";
+		}
+			if(searchText == "ObamaCare"){
+			qid="151503";
+			fileName ="qrelObamaCare";
+		}
+			
+			
+			var val = elem.value;
+			var id = elem.id;
+
+			/* alert("Accessor Id:" + "Nitin");
+			alert("Doc Id:" + id);
+			alert("Ranking:" + val);
+ */
+			var Qrelbean = {
+		 		"queryId" : qid,
+				"accessor" : "Nitin",
+				"docId" : id,
+				"fileName" : fileName,
+				"rank" : val
+			};
+ 
+ 			Qrelbean= JSON.stringify(Qrelbean);
+		/* 	alert('Storage call');
+
+			localStorage.setItem(id,Qrelbean); */
+			
+			
+			
+			
+			 $.ajax({
+				url : "http://localhost:8080/hw5Web/rest/qrel/readAdd",
+				type : "POST",
+			 	data : Qrelbean,
+				contentType : "application/json",
+				crossDomain : true,  
+				success : function(data) {
+					//alert(data);
+					$(".filesCount").val(data);
+				}
+			}); 
+			//alert("After Storage");
+			count++;
+	
+
+		}
+		
+		function writeFile() {
+			alert("In Write file..");
+			/* var qrel='{';
+			for (var i = 0; i < localStorage.length; i++){
+			   qrel += localStorage.getItem(localStorage.key(i));
+				   
+			}
+			
+			qrel+="}";
+			
+			qrel=JSON.stringify('qrel);
+			alert(qrel); */
+			
+			$.ajax({
+				url : "http://localhost:8080/hw5Web/rest/qrel/writeFile",
+				type : "POST",
+				crossDomain : true,  
+				success : function(data) {
+					alert("Compelted creating file..");
+				}
+			});
+
+		}
+		
+	</script>
+
+
+
+
+	<!-- Load resources -->
+	<script src='bower_components/angular/angular.min.js'
+		type='text/javascript'></script>
+	<script src='bower_components/angular-animate/angular-animate.min.js'
+		type='text/javascript'></script>
+	<script
+		src='bower_components/elasticsearch/elasticsearch.angular.min.js'
+		type='text/javascript'></script>
+	<script src='js/config.js' type='text/javascript'></script>
+	<script src='js/app.js' type='text/javascript'></script>
+	<script src='js/controllers.js' type='text/javascript'></script>
+	<script src='js/services.js' type='text/javascript'></script>
+</body>
+</html>

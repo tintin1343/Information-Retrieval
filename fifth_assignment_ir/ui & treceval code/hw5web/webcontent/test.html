@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html data-ng-app='ngModalDemo'>
+  <head>
+    <title>ngQuickDate Demo</title>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="dist/ng-modal.css" media="all" />
+    <style type='text/css'>
+      body{font-family:'Helvetica Neue',Helvetica,sans-serif}
+      h1 { padding: 0; margin: 0; }
+      .ng-cloak { display: none; }
+    </style>
+  </head>
+  <body>
+    <div ng-controller='DemoController'>
+      <modal-dialog show='myData.modalShown' width='500px' dialog-title='Modal Dialog Title' on-close='logClose()'>
+        <p>This is some html content</p>
+        <p>
+          <label for='hello'>Hello:</label>
+          <input type='text' name='hello' ng-model='myData.hello' />
+        </p>
+        <p>
+          <label for='foo'>Foo:</label>
+          <input type='text' name='foo' ng-model='myData.foo' />
+        </p>
+        <img src='http://upload.wikimedia.org/wikipedia/commons/2/22/Turkish_Van_Cat.jpg' width='300px'/>
+      </modal-dialog>
+      <button ng-click='toggleModal()'>Toggle Modal</button>
+      <br/>
+      <br/>
+      <br/>
+      <p><strong>Shown?</strong> {{myData.modalShown}}</p>
+      <p><strong>Hello</strong>: {{myData.hello}}</p>
+      <p><strong>Foo</strong>: {{myData.foo}}</p>
+    </div>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="dist/ng-modal.js"></script>
+    <script type='text/javascript'>
+      app = angular.module('ngModalDemo', ['ngModal']);
+      app.config(function(ngModalDefaultsProvider) {
+          return ngModalDefaultsProvider.set({
+            closeButtonHtml: "<i class='fa fa-times'></i>"
+          });
+      });
+      app.controller('DemoController', function($scope) {
+          $scope.myData = {
+            link: "http://google.com",
+            modalShown: false,
+            hello: 'world',
+            foo: 'bar'
+          }
+          $scope.logClose = function() {
+            console.log('close!');
+          };
+          $scope.toggleModal = function() {
+            $scope.myData.modalShown = !$scope.myData.modalShown;
+          };
+      });
+    </script>
+  </body>
+</html>

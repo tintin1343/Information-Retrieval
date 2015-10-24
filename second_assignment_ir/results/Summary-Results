@@ -1,0 +1,30 @@
+For Top 100 Results:
+
+			Raw File     /     Wo Stop Words  /    Stemmed    /   Stemmed and woStop
+DocLength		84678			84678				84678			84678
+VocabSize		195627			195235				156145			155781
+AvgDocLen		419.0			234.0				419.0			232.0
+Okapi			0.1259			0.1230				0.1411			0.1366
+BM25			0.1564			0.1506				0.1997			0.1936
+Laplace			0.1203			0.1188				0.1480			0.1474
+Proximity											0.1108			0.1068
+
+For Top 1000 Results:
+
+			Raw File     /     Wo Stop Words  /    Stemmed    /   Stemmed and woStop
+DocLength		84678			84678				84678			84678
+VocabSize		195627			195235				156145			155781
+AvgDocLen		419.0			234.0				419.0			232.0
+Okapi			0.1595			0.1569				0.1800			0.1752
+BM25			0.1996		    0.1922				0.2487			0.2429
+Laplace			0.1535			0.1521				0.1804			0.1805
+Proximity											0.1472			0.1442
+
+
+Result from last time
+
+1) Jelinek --> 0.1609
+2) Laplace --> 0.1480
+3) BM-125 --> 0.1890
+4) IDF --> 0.1902
+5) Okapi --> 0.1300

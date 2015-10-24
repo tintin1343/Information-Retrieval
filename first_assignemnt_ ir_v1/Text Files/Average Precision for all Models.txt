@@ -1,0 +1,7 @@
+Retrieval Model
+ap_dataset_4
+1) Jelinek --> 0.1609
+2) Laplace --> 0.1480
+3) BM-125 --> 0.1890
+4) IDF --> 0.1902
+5) Okapi --> 0.1300

@@ -1,0 +1,44 @@
+# Sense Commands for settings and mappings for the index
+
+PUT /ap_dataset_4/
+{
+  "settings": {
+    "index": {
+      "store": {
+        "type": "default"
+      },
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    },
+    "analysis": {
+      "analyzer": {
+        "my_english": { 
+          "type": "english",
+          "stopwords_path": "stoplist.txt" 
+        }
+      }
+    }
+  }
+}
+
+
+
+PUT /ap_dataset_4/document/_mapping
+{
+  "document": {
+    "properties": {
+      "docno": {
+        "type": "string",
+        "store": true,
+        "index": "not_analyzed"
+      },
+      "text": {
+        "type": "string",
+        "store": true,
+        "index": "analyzed",
+        "term_vector": "with_positions_offsets_payloads",
+        "analyzer": "my_english"
+      }
+    }
+  }
+}
